@@ -1,6 +1,7 @@
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
+from model import RUN
 
 import sys
 from os import path
@@ -55,6 +56,9 @@ class FaceDetectionWidget(QtWidgets.QWidget):
         faces = self.detect_faces(image_data)
         tests = np.array(image_data)
         #print(tests.shape)
+        #time.sleep(2)
+        tests = RUN.img_reshape(tests)
+        RUN.teeth_detection(tests)
         """
           Edit here~~~~  image dim : 480 * 640 *3
           teeth detection block~
@@ -62,18 +66,22 @@ class FaceDetectionWidget(QtWidgets.QWidget):
           id = teeth_detection(image_data)         # do teeth detection
           print(id)                                # the id of teeth
         """
-        tests = tests[:,80:560,:]
-        #cv2.imwrite('test.jpg',tests)
-		
+        #tests = tests[40:460,160:520,:]
+        cv2.imwrite('test.jpg',tests)
+        time.sleep(0.3)
         #print(tests.shape)
-        time.sleep(0.03)
+        #time.sleep(2)
+        
+        #draw rectangle
+        """
         for (x, y, w, h) in faces:
             cv2.rectangle(image_data,
                           (x, y),
                           (x+w, y+h),
                           self._red,
                           self._width)
-
+        cv2.imwrite('face_segment.jpg',tests)
+        """
         self.image = self.get_qimage(image_data)
         if self.image.size() != self.size():
             self.setFixedSize(self.image.size())
@@ -85,7 +93,6 @@ class FaceDetectionWidget(QtWidgets.QWidget):
         bytesPerLine = 3 * width
         QImage = QtGui.QImage
         #print(image.shape)
-        
         image = QImage(image.data,
                        width,
                        height,
@@ -117,6 +124,11 @@ class MainWidget(QtWidgets.QWidget):
 
         layout.addWidget(self.face_detection_widget)
         self.run_button = QtWidgets.QPushButton('Start')
+        
+        self.textbox = QtWidgets.QLineEdit(self)
+        self.textbox2 = QtWidgets.QLineEdit(self)
+        layout.addWidget(self.textbox)
+        layout.addWidget(self.textbox2)
         layout.addWidget(self.run_button)
 
         self.run_button.clicked.connect(self.record_video.start_recording)
@@ -134,7 +146,7 @@ def main(haar_cascade_filepath):
 
 #Start from heere~~~~
 if __name__ == '__main__':
-    
+    #RUN.printf()
     cascade_filepath = path.abspath('haarcascade_frontalface_default.xml')
     #print(path.abspath(find()))
     main(cascade_filepath)
