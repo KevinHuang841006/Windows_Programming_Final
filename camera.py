@@ -1,7 +1,10 @@
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
-from model import RUN
+#from PyQt5 import Qt
+#from model import RUN
+
+import button_feature
 
 import sys
 from os import path
@@ -57,8 +60,8 @@ class FaceDetectionWidget(QtWidgets.QWidget):
         tests = np.array(image_data)
         #print(tests.shape)
         #time.sleep(2)
-        tests = RUN.img_reshape(tests)
-        RUN.teeth_detection(tests)
+        #tests = RUN.img_reshape(tests)
+        #RUN.teeth_detection(tests)
         """
           Edit here~~~~  image dim : 480 * 640 *3
           teeth detection block~
@@ -66,9 +69,9 @@ class FaceDetectionWidget(QtWidgets.QWidget):
           id = teeth_detection(image_data)         # do teeth detection
           print(id)                                # the id of teeth
         """
-        #tests = tests[40:460,160:520,:]
-        cv2.imwrite('test.jpg',tests)
-        time.sleep(0.3)
+        tests = tests[40:460,160:520,:]
+        cv2.imwrite('test1.jpg',tests)
+        time.sleep(0.1)
         #print(tests.shape)
         #time.sleep(2)
         
@@ -108,6 +111,7 @@ class FaceDetectionWidget(QtWidgets.QWidget):
         self.image = QtGui.QImage()
 
 
+# GUI Design here~~~~~~~~~~
 class MainWidget(QtWidgets.QWidget):
     def __init__(self, haarcascade_filepath, parent=None):
         super().__init__(parent)
@@ -125,14 +129,61 @@ class MainWidget(QtWidgets.QWidget):
         layout.addWidget(self.face_detection_widget)
         self.run_button = QtWidgets.QPushButton('Start')
         
+        
+        layout2 = QtWidgets.QHBoxLayout()
+        self.button1 = QtWidgets.QPushButton('1')
+        self.button2 = QtWidgets.QPushButton('2')
+        self.button3 = QtWidgets.QPushButton('3')
+        self.button4 = QtWidgets.QPushButton('4')
+        layout2.addWidget(self.button1)
+        layout2.addWidget(self.button2)
+        layout2.addWidget(self.button3)
+        layout2.addWidget(self.button4)
+        
+        layout3 = QtWidgets.QHBoxLayout()
+        self.button5 = QtWidgets.QPushButton('5')
+        self.button6 = QtWidgets.QPushButton('6')
+        self.button7 = QtWidgets.QPushButton('7')
+        self.button8 = QtWidgets.QPushButton('8')
+        layout3.addWidget(self.button5)
+        layout3.addWidget(self.button6)
+        layout3.addWidget(self.button7)
+        layout3.addWidget(self.button8)
+        
         self.textbox = QtWidgets.QLineEdit(self)
-        self.textbox2 = QtWidgets.QLineEdit(self)
+        #self.textbox2 = QtWidgets.QLineEdit(self)
         layout.addWidget(self.textbox)
-        layout.addWidget(self.textbox2)
+        #layout.addWidget(self.textbox2)
         layout.addWidget(self.run_button)
-
+        
+        #add Re_label text
+        relabel_layout = QtWidgets.QHBoxLayout()
+        self.label1 = QtWidgets.QLabel()
+        self.label1.setText("\n")
+        self.label1.setText("Relabel~~~")
+        self.label1.setFixedWidth(70)
+        #self.label1.setAlignment(QtCore.Qt.AlignLeft)
+        self.label_textbox = QtWidgets.QLineEdit("non")
+        self.label_textbox.setFixedWidth(40)
+        #self.label_textbox.setAlignment(QtCore.Qt.AlignLeft)
+        relabel_layout.addWidget(self.label1, QtCore.Qt.AlignLeft)
+        relabel_layout.addWidget(self.label_textbox, QtCore.Qt.AlignLeft)
+        
+        
+        self.reset_button = QtWidgets.QPushButton('reset_button')
+        
+        layout.addLayout(relabel_layout, QtCore.Qt.AlignLeft)
+        layout.addWidget(self.reset_button)
+        layout.addLayout(layout2)
+        layout.addLayout(layout3)
+        
+        
         self.run_button.clicked.connect(self.record_video.start_recording)
+        self.button1.clicked.connect(self.push_button1)
         self.setLayout(layout)
+    
+    def push_button1(self):
+        self.label_textbox.setText("1")
 
 
 def main(haar_cascade_filepath):
