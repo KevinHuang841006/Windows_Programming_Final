@@ -1,16 +1,18 @@
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
-#from PyQt5 import Qt
-#from model import RUN
 
+#Create by Po-Hao  button features~~~  for the button  
 import button_feature
+
 
 import sys
 from os import path
 import time
 import cv2
 import numpy as np
+
+tooth_flag=0
 
 class RecordVideo(QtCore.QObject):
     image_data = QtCore.pyqtSignal(np.ndarray)
@@ -120,16 +122,42 @@ class MainWidget(QtWidgets.QWidget):
 
         
         self.record_video = RecordVideo()
-
+        
+        
         image_data_slot = self.face_detection_widget.image_data_slot
         self.record_video.image_data.connect(image_data_slot)
 
         layout = QtWidgets.QVBoxLayout()
-
+        
+        #First Item
         layout.addWidget(self.face_detection_widget)
+        
+        #Second
+        self.textbox = QtWidgets.QLineEdit(self)
+        layout.addWidget(self.textbox)
+        
+        #Third
         self.run_button = QtWidgets.QPushButton('Start')
+        layout.addWidget(self.run_button)
         
         
+        #Forth add Re_label text
+        relabel_layout = QtWidgets.QHBoxLayout()
+        self.label1 = QtWidgets.QLabel()
+        self.label1.setText("\n")
+        self.label1.setText("Relabel~~~")
+        self.label1.setFixedWidth(70)
+        self.label_textbox = QtWidgets.QLineEdit("non")
+        self.label_textbox.setFixedWidth(40)
+        relabel_layout.addWidget(self.label1, QtCore.Qt.AlignLeft)
+        relabel_layout.addWidget(self.label_textbox, QtCore.Qt.AlignLeft)
+        layout.addLayout(relabel_layout, QtCore.Qt.AlignLeft)
+        
+        #Fifth
+        self.reset_button = QtWidgets.QPushButton('reset_button')
+        layout.addWidget(self.reset_button)
+        
+        #Sixth
         layout2 = QtWidgets.QHBoxLayout()
         self.button1 = QtWidgets.QPushButton('1')
         self.button2 = QtWidgets.QPushButton('2')
@@ -139,6 +167,7 @@ class MainWidget(QtWidgets.QWidget):
         layout2.addWidget(self.button2)
         layout2.addWidget(self.button3)
         layout2.addWidget(self.button4)
+        layout.addLayout(layout2)
         
         layout3 = QtWidgets.QHBoxLayout()
         self.button5 = QtWidgets.QPushButton('5')
@@ -149,42 +178,66 @@ class MainWidget(QtWidgets.QWidget):
         layout3.addWidget(self.button6)
         layout3.addWidget(self.button7)
         layout3.addWidget(self.button8)
-        
-        self.textbox = QtWidgets.QLineEdit(self)
-        #self.textbox2 = QtWidgets.QLineEdit(self)
-        layout.addWidget(self.textbox)
-        #layout.addWidget(self.textbox2)
-        layout.addWidget(self.run_button)
-        
-        #add Re_label text
-        relabel_layout = QtWidgets.QHBoxLayout()
-        self.label1 = QtWidgets.QLabel()
-        self.label1.setText("\n")
-        self.label1.setText("Relabel~~~")
-        self.label1.setFixedWidth(70)
-        #self.label1.setAlignment(QtCore.Qt.AlignLeft)
-        self.label_textbox = QtWidgets.QLineEdit("non")
-        self.label_textbox.setFixedWidth(40)
-        #self.label_textbox.setAlignment(QtCore.Qt.AlignLeft)
-        relabel_layout.addWidget(self.label1, QtCore.Qt.AlignLeft)
-        relabel_layout.addWidget(self.label_textbox, QtCore.Qt.AlignLeft)
-        
-        
-        self.reset_button = QtWidgets.QPushButton('reset_button')
-        
-        layout.addLayout(relabel_layout, QtCore.Qt.AlignLeft)
-        layout.addWidget(self.reset_button)
-        layout.addLayout(layout2)
         layout.addLayout(layout3)
+
+
+        # Edit here~~~~~ graphic, line chart
+        self.empty_label = QtWidgets.QLabel()
+        layout.addWidget(self.empty_label)
+        self.total_result_button = QtWidgets.QPushButton('total_result')
+        layout.addWidget(self.total_result_button)
+        
+        current_layout = QtWidgets.QHBoxLayout()
+        self.current_result_ComboBox = QtWidgets.QComboBox()
+        self.current_result_ComboBox.addItem('Action_1')
+        self.current_result_ComboBox.addItem('Action_2')
+        self.current_result_ComboBox.addItem('Action_3')
+        self.current_result_ComboBox.addItem('Action_4')
+        self.current_result_ComboBox.addItem('Action_5')
+        self.current_result_ComboBox.addItem('Action_6')
+        self.current_result_ComboBox.addItem('Action_7')
+        self.current_result_ComboBox.addItem('Action_8')
+        self.current_label = QtWidgets.QLabel('Current Result:')
+        current_layout.addWidget(self.current_label)
+        current_layout.addWidget(self.current_result_ComboBox)
+        layout.addLayout(current_layout)
+        
+        #ADD annotation
+        self.current_list = QtWidgets.QListWidget()
+        self.current_list.addItem('Some Tips~~~')
+        self.current_list.addItem('test1')
+        self.current_list.addItem('test2')
+        self.current_list.addItem('test3')
+        layout.addWidget(self.current_list)
         
         
         self.run_button.clicked.connect(self.record_video.start_recording)
+        self.reset_button.clicked.connect(self.reset_button1)
         self.button1.clicked.connect(self.push_button1)
+        self.button2.clicked.connect(self.push_button2)
+        
+        
+        
+        self.current_result_ComboBox.activated[str].connect(self.onActivated) 
+        
+        
         self.setLayout(layout)
     
+    def onActivated(self,text):
+        print(text)
+    
+    def reset_button1(self):
+        tooth_flag=0
+        self.label_textbox.setText("non")
+        button_feature.set_flag(tooth_flag)
     def push_button1(self):
+        tooth_flag=1
         self.label_textbox.setText("1")
-
+        button_feature.set_flag(tooth_flag)
+    def push_button2(self):
+        tooth_flag=2
+        self.label_textbox.setText("2")
+        button_feature.set_flag(tooth_flag)
 
 def main(haar_cascade_filepath):
     app = QtWidgets.QApplication(sys.argv)
