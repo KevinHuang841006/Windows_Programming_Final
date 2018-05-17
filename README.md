@@ -6,7 +6,7 @@
 
 
 
-進度：
+###進度：
 flag is in the flag.npy
 	if flag != 0
 		1. do labeling
