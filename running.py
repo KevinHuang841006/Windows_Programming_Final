@@ -7,14 +7,43 @@ import cv2
 from keras.models import Sequential
 from keras.models import load_model
 
-
-
+S_model = load_model('./test_model.h5')
 def teeth_detection(image):
-	S_model = load_model('./vgg_lr0.001_epoch297_0.882.h5')
 	result = S_model.predict(image)
 	result = result[0]
 	result = numpy.array(result)
 	print(numpy.argmax(result))
+	answer = numpy.argmax(result)
+	'''
+	flag is in the flag.npy
+	if flag != 0
+		1. do labeling
+			a. creeate 16 directory
+			b. open text file to record the filename
+			c. create file with name record in text file
+		2. calculate accuracy
+			a. if result != flag then print no else yes
+			b. record in the text file named acc.txt
+		3. statistic
+			create confusion 2d-array 
+	else 
+		print(numpy.argmax(result))
+	'''
+	flag = numpy.load('flag.npy')
+	#print("flag:",flag)
+	if flag!=0:
+		name_num = 'label_image/' + str(flag) + '/' + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime()) + '.jpg'
+		print(name_num)
+		save_image = numpy.reshape(image,(224,224,3))
+		print(save_image.shape)
+		cv2.imwrite(name_num,save_image)
+		#wait until model is real
+		"""
+		confusion_matric = numpy.load('con_matric.npy')
+		confusion_matric[flag-1][answer]+=1
+		numpy.save('con_matric.npy',confusion_matric)
+		"""
+	
 def img_reshape(image):
 	image = image[40:460,160:520,:]
 	cv2.imwrite('dox.jpg',image)
