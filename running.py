@@ -14,7 +14,7 @@ def teeth_detection(image):
 	result = numpy.array(result)
 	print(numpy.argmax(result))
 	answer = numpy.argmax(result)
-	'''
+	
 	flag is in the flag.npy
 	if flag != 0
 		1. do labeling
@@ -28,7 +28,7 @@ def teeth_detection(image):
 			create confusion 2d-array 
 	else 
 		print(numpy.argmax(result))
-	'''
+	
 	flag = numpy.load('flag.npy')
 	#print("flag:",flag)
 	if flag!=0:
