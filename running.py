@@ -15,7 +15,7 @@ def teeth_detection(image):
 	print(numpy.argmax(result))
 	answer = numpy.argmax(result)
 	
-	flag is in the flag.npy
+	#flag is in the flag.npy
 	if flag != 0
 		1. do labeling
 			a. creeate 16 directory
